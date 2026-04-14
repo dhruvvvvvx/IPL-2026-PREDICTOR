@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA--IPL 2026 PREDICTOR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Syncopate:wght@400;700&display=swap');
+        
+        :root { 
+            --bg: #02040a; 
+            --green-aura: #00ffcc;
+            --red-aura: #ff4d4d;
+        }
+
+        * { font-family: 'Outfit', sans-serif; box-sizing: border-box; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: #fff; 
+            margin: 0; 
+            overflow-x: hidden;
+            background-attachment: fixed;
+        }
+
+        /* Moving Galaxy Engine */
+        .galaxy-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0a0c1a 0%, #02040a 100%);
+            pointer-events: none;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0; left: 0; width: 200%; height: 200%;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 100px 150px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 250px 50px, #ddd, rgba(0,0,0,0));
+            background-size: 300px 300px;
+            animation: moveGalaxy 150s linear infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes moveGalaxy { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+
+        /* --- ATTRACTIVE NEW HEADING STYLES --- */
+        .header-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .welcome-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 300;
+            letter-spacing: 0.8em;
+            text-transform: uppercase;
+            color: #4facfe;
+            text-shadow: 0 0 15px rgba(79, 172, 254, 0.8);
+            animation: welcomeGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes welcomeGlow {
+            0%, 100% { opacity: 0.5; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .aura-main-title {
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            line-height: 1;
+            background: linear-gradient(to right, #fff 20%, #4facfe 40%, #00f2fe 60%, #fff 80%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            text-fill-color: transparent;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        .aura-main-title::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            -webkit-text-stroke: 1px rgba(79, 172, 254, 0.3);
+            z-index: -1;
+            transform: translate(4px, 4px);
+        }
+
+        /* RCB RGB LED */
+        @keyframes rcb-led {
+            0% { border-color: #ff0000; box-shadow: 0 0 10px rgba(255,0,0,0.4); }
+            33% { border-color: #00ff00; box-shadow: 0 0 10px rgba(0,255,0,0.4); }
+            66% { border-color: #0000ff; box-shadow: 0 0 10px rgba(0,0,255,0.4); }
+            100% { border-color: #ff0000; box-shadow: 0 0 10px rgba(255,0,0,0.4); }
+        }
+        .rcb-match { border: 1.5px solid transparent !important; animation: rcb-led 2s linear infinite; }
+
+        /* Aura Winner/Loser Boxes */
+        .team-box.is-winner { 
+            border: 2px solid var(--green-aura) !important;
+            background: rgba(0, 255, 204, 0.15) !important;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+            transform: scale(1.03);
+        }
+
+        .team-box.is-loser { 
+            border: 2px solid var(--red-aura) !important;
+            background: rgba(255, 77, 77, 0.1) !important;
+            opacity: 0.6;
+        }
+
+        .match-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px); }
+        .team-box { 
+            cursor: pointer; background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; height: 55px; border-radius: 12px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .ranking-row { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .pos-num { background: rgba(79, 172, 254, 0.1); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: 900; color: #4facfe; }
+
+        @keyframes shine { to { background-position: 200% center; } }
+
+        @media (min-width: 1024px) {
+            .sticky-side { position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto; scrollbar-width: none; }
+        }
+        
+        .txt-RR { color: #ea1a85; } .txt-CSK { color: #fdb913; }
+        .txt-RCB { color: #ec1c24; } .txt-MI { color: #004ba0; }
+        .txt-KKR { color: #8a2be2; } .txt-SRH { color: #f26522; }
+        .txt-DC { color: #2244ff; } .txt-GT { color: #556677; }
+        .txt-LSG { color: #0057e7; } .txt-PBKS { color: #ed1b24; }
+    </style>
+</head>
+<body class="pb-20">
+
+    <div class="galaxy-container"><div class="stars"></div></div>
+
+    <header class="header-glass text-center relative overflow-hidden">
+        <div class="welcome-text text-[10px] md:text-sm mb-4">Welcome to</div>
+        <h1 class="aura-main-title italic tracking-tighter uppercase mb-8" data-text="AURA--IPL">
+            AURA--IPL
+        </h1>
+        
+        <div class="flex flex-wrap justify-center gap-3 md:gap-6 mt-6">
+            <button onclick="tab('off')" id="t-off" class="px-6 py-2 rounded-full border border-white/10 text-[10px] font-bold uppercase transition hover:bg-white/10">Official Table</button>
+            <button onclick="tab('my')" id="t-my" class="px-6 py-2 rounded-full border border-blue-500/50 text-[10px] font-bold uppercase transition bg-blue-600/20 text-blue-400 shadow-[0_0_15px_rgba(79,172,254,0.2)]">Predictor Mode</button>
+            <button onclick="resetAll()" class="px-6 py-2 rounded-full border border-red-500/30 text-[10px] font-bold uppercase text-red-400 hover:bg-red-500/10">Clear Picks</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 relative">
+        <div id="view-off" class="hidden">
+            <div class="overflow-x-auto rounded-2xl bg-black/40 border border-white/10 backdrop-blur-xl">
+                <table class="w-full text-left text-xs md:text-sm min-w-[600px]">
+                    <thead class="bg-white/5 text-[9px] md:text-[10px] uppercase font-bold text-zinc-500">
+                        <tr><th class="px-4 md:px-8 py-4 md:py-6">POS</th><th class="px-2 py-4 md:py-6">TEAM</th><th class="text-center">P</th><th class="text-center">W</th><th class="text-center">L</th><th class="text-center">NRR</th><th class="px-4 md:px-8 py-4 md:py-6 text-right">PTS</th></tr>
+                    </thead>
+                    <tbody id="off-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="view-my" class="flex flex-col-reverse lg:grid lg:grid-cols-12 lg:gap-12">
+            <div class="lg:col-span-7 mt-8 lg:mt-0"><div id="match-list" class="space-y-4 md:space-y-6"></div></div>
+            <div class="lg:col-span-5"><div class="sticky-side"><div id="my-table-container" class="space-y-2 md:space-y-3"></div></div></div>
+        </div>
+    </main>
+
+    <script>
+        const baseData = {
+            RR: { w:4, l:1, nr:0, nrr:0.889 }, PBKS: { w:3, l:0, nr:1, nrr:0.720 },
+            RCB: { w:3, l:1, nr:0, nrr:1.148 }, SRH: { w:2, l:3, nr:0, nrr:0.576 },
+            DC: { w:2, l:2, nr:0, nrr:0.322 }, GT: { w:2, l:2, nr:0, nrr:-0.029 },
+            LSG: { w:2, l:2, nr:0, nrr:-0.427 }, MI: { w:1, l:3, nr:0, nrr:-0.772 },
+            CSK: { w:1, l:3, nr:0, nrr:-1.532 }, KKR: { w:0, l:3, nr:1, nrr:-1.315 }
+        };
+
+        const fixtures = [
+            { id: 22, date: "Apr 14", venue: "Chennai", t1: "CSK", t2: "KKR" }, { id: 23, date: "Apr 15", venue: "Bengaluru", t1: "RCB", t2: "LSG" },
+            { id: 24, date: "Apr 16", venue: "Mumbai", t1: "MI", t2: "PBKS" }, { id: 25, date: "Apr 17", venue: "Ahmedabad", t1: "GT", t2: "KKR" },
+            { id: 26, date: "Apr 18", venue: "Bengaluru", t1: "RCB", t2: "DC" }, { id: 27, date: "Apr 18", venue: "Hyderabad", t1: "SRH", t2: "CSK" },
+            { id: 28, date: "Apr 19", venue: "Kolkata", t1: "KKR", t2: "RR" }, { id: 29, date: "Apr 19", venue: "Mullanpur", t1: "PBKS", t2: "LSG" },
+            { id: 30, date: "Apr 20", venue: "Ahmedabad", t1: "GT", t2: "MI" }, { id: 31, date: "Apr 21", venue: "Hyderabad", t1: "SRH", t2: "DC" },
+            { id: 32, date: "Apr 22", venue: "Lucknow", t1: "LSG", t2: "RR" }, { id: 33, date: "Apr 23", venue: "Mumbai", t1: "MI", t2: "CSK" },
+            { id: 34, date: "Apr 24", venue: "Bengaluru", t1: "RCB", t2: "GT" }, { id: 35, date: "Apr 25", venue: "Delhi", t1: "DC", t2: "PBKS" },
+            { id: 36, date: "Apr 25", venue: "Jaipur", t1: "RR", t2: "SRH" }, { id: 37, date: "Apr 26", venue: "Chennai", t1: "CSK", t2: "GT" },
+            { id: 38, date: "Apr 26", venue: "Lucknow", t1: "LSG", t2: "KKR" }, { id: 39, date: "Apr 27", venue: "Delhi", t1: "DC", t2: "RCB" },
+            { id: 40, date: "Apr 28", venue: "Mullanpur", t1: "PBKS", t2: "RR" }, { id: 41, date: "Apr 29", venue: "Mumbai", t1: "MI", t2: "SRH" },
+            { id: 42, date: "Apr 30", venue: "Ahmedabad", t1: "GT", t2: "RCB" }, { id: 43, date: "May 01", venue: "Jaipur", t1: "RR", t2: "DC" },
+            { id: 44, date: "May 02", venue: "Chennai", t1: "CSK", t2: "MI" }, { id: 45, date: "May 03", venue: "Hyderabad", t1: "SRH", t2: "KKR" },
+            { id: 46, date: "May 03", venue: "Ahmedabad", t1: "GT", t2: "PBKS" }, { id: 47, date: "May 04", venue: "Mumbai", t1: "MI", t2: "LSG" },
+            { id: 48, date: "May 05", venue: "Delhi", t1: "DC", t2: "CSK" }, { id: 49, date: "May 06", venue: "Hyderabad", t1: "SRH", t2: "PBKS" },
+            { id: 50, date: "May 07", venue: "Lucknow", t1: "LSG", t2: "RCB" }, { id: 51, date: "May 08", venue: "Delhi", t1: "DC", t2: "KKR" },
+            { id: 52, date: "May 09", venue: "Jaipur", t1: "RR", t2: "GT" }, { id: 53, date: "May 10", venue: "Chennai", t1: "CSK", t2: "LSG" },
+            { id: 54, date: "May 10", venue: "Mumbai", t1: "MI", t2: "RCB" }, { id: 55, date: "May 11", venue: "Mullanpur", t1: "PBKS", t2: "DC" },
+            { id: 56, date: "May 12", venue: "Ahmedabad", t1: "GT", t2: "SRH" }, { id: 57, date: "May 13", venue: "Bengaluru", t1: "RCB", t2: "KKR" },
+            { id: 58, date: "May 14", venue: "Mullanpur", t1: "PBKS", t2: "MI" }, { id: 59, date: "May 15", venue: "Lucknow", t1: "LSG", t2: "CSK" },
+            { id: 60, date: "May 16", venue: "Kolkata", t1: "KKR", t2: "GT" }, { id: 61, date: "May 17", venue: "Mullanpur", t1: "PBKS", t2: "RCB" },
+            { id: 62, date: "May 17", venue: "Delhi", t1: "DC", t2: "RR" }, { id: 63, date: "May 18", venue: "Chennai", t1: "CSK", t2: "SRH" },
+            { id: 64, date: "May 19", venue: "Jaipur", t1: "RR", t2: "LSG" }, { id: 65, date: "May 20", venue: "Kolkata", t1: "KKR", t2: "MI" },
+            { id: 66, date: "May 21", venue: "Ahmedabad", t1: "GT", t2: "CSK" }, { id: 67, date: "May 22", venue: "Hyderabad", t1: "SRH", t2: "RCB" },
+            { id: 68, date: "May 23", venue: "Lucknow", t1: "LSG", t2: "PBKS" }, { id: 69, date: "May 24", venue: "Mumbai", t1: "MI", t2: "RR" },
+            { id: 70, date: "May 24", venue: "Kolkata", t1: "KKR", t2: "DC" }
+        ];
+
+        let state = fixtures.map(f => ({...f, user: null}));
+
+        function calc(mode) {
+            let s = {}; 
+            Object.keys(baseData).forEach(t => {
+                s[t] = { ...baseData[t], p: baseData[t].w + baseData[t].l + baseData[t].nr, pts: (baseData[t].w * 2) + baseData[t].nr };
+            });
+            if (mode === 'my') {
+                state.forEach(m => {
+                    if (m.user) {
+                        s[m.t1].p++; s[m.t2].p++;
+                        if (m.user === m.t1) { s[m.t1].w++; s[m.t1].pts += 2; s[m.t2].l++; s[m.t1].nrr += 0.04; s[m.t2].nrr -= 0.04; }
+                        else { s[m.t2].w++; s[m.t2].pts += 2; s[m.t1].l++; s[m.t2].nrr += 0.04; s[m.t1].nrr -= 0.04; }
+                    }
+                });
+            }
+            return Object.entries(s).map(([id, d]) => ({id, ...d})).sort((a,b) => b.pts - a.pts || b.nrr - a.nrr);
+        }
+
+        function render() {
+            document.getElementById('off-table').innerHTML = calc('off').map((t,i) => `
+                <tr class="border-b border-white/5">
+                    <td class="px-4 py-4 font-black text-white/20">${i+1}</td>
+                    <td class="px-2 py-4 font-black uppercase txt-${t.id}">${t.id}</td>
+                    <td class="text-center">${t.p}</td><td class="text-center text-green-400">${t.w}</td>
+                    <td class="text-center text-red-400">${t.l}</td><td class="text-center font-mono">${t.nrr.toFixed(3)}</td>
+                    <td class="px-4 py-4 text-right font-black text-white">${t.pts}</td>
+                </tr>`).join('');
+
+            document.getElementById('my-table-container').innerHTML = calc('my').map((t,i) => `
+                <div class="ranking-row flex items-center justify-between p-3 rounded-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="pos-num">${i+1}</div>
+                        <span class="font-black text-lg uppercase txt-${t.id}">${t.id}</span>
+                    </div>
+                    <div class="text-lg font-black">${t.pts} <span class="text-[8px] text-blue-400">PTS</span></div>
+                </div>`).join('');
+
+            document.getElementById('match-list').innerHTML = state.map(m => {
+                const isRCB = (m.t1 === 'RCB' || m.t2 === 'RCB');
+                const t1Aura = m.user === m.t1 ? 'is-winner' : (m.user ? 'is-loser' : '');
+                const t2Aura = m.user === m.t2 ? 'is-winner' : (m.user ? 'is-loser' : '');
+                return `
+                <div class="match-card rounded-2xl p-4 ${isRCB ? 'rcb-match' : ''}">
+                    <div class="flex justify-between mb-3 text-[8px] font-black text-zinc-500 uppercase tracking-widest">
+                        <span>Match ${m.id} • ${m.date}</span><span>${m.venue}</span>
+                    </div>
+                    <div class="grid grid-cols-7 gap-2 items-center">
+                        <div onclick="pick(${m.id}, '${m.t1}')" class="col-span-3 team-box ${t1Aura}"><span class="font-black txt-${m.t1}">${m.t1}</span></div>
+                        <div class="text-center opacity-10 text-[8px] italic">VS</div>
+                        <div onclick="pick(${m.id}, '${m.t2}')" class="col-span-3 team-box ${t2Aura}"><span class="font-black txt-${m.t2}">${m.t2}</span></div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        window.pick = (id, team) => { let m = state.find(x => x.id === id); m.user = (m.user === team) ? null : team; render(); };
+        window.tab = (f) => { document.getElementById('view-off').classList.toggle('hidden', f !== 'off'); document.getElementById('view-my').classList.toggle('hidden', f !== 'my'); };
+        window.resetAll = () => { state.forEach(m => m.user = null); render(); };
+        window.onload = render;
+    </script>
+</body>
+</html>
